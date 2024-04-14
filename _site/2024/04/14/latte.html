@@ -1,0 +1,102 @@
+<p><img src="./static/bid_latte.png" alt="plot" /></p>
+
+<p>We introduce Latte, a new linear time and memory attention mechanism which, unlike other sparse methods, takes all the tokens into account. Our method can be used as a replace ment of the standard attention in both bidirectional and causal settings with similar empirical performance. An additional benefit of causal Latte is efficient inference, which only requires constant time to predict the next token, compared to the linear scaling requirement of the standard attention.</p>
+
+<p>We are first going to rewrite the classic attention mechanism in the non-vectorises form, which will help us describe the idea behind Latte more intuitively.</p>
+
+<p>## Quick Recap
+ One of the most common ways of writing an attention layer is using the matrix form:
+ \(Softmax(\frac{1}{\sqrt{d}}QK^T)V\)</p>
+
+<p>Nonetheles, the formula can be written more intuitivel without any vectorisation. Considering a sequence of $T$ tokens from which we obtain the query $q_i$, key $k_i$ and value $v_i$ we can explain attention using the figure below:
+ <img src="./static/att.png" alt="plot" /></p>
+
+<p>In the above we defined:
+\(A_{ij} = \frac{\exp(Q_{i,:}K_{:,j}^{T})}{\sum_{j=1}^T \exp(Q_{i,:}K_{:,j}^{T}) }\)
+and
+\(\tilde{x_i} = \sum_{j=1}^T A_{ij}V_j\)</p>
+
+<p>For the causal case we would simply sum up to $i$ instead of $T$ such that tokens in the future are not considered.</p>
+
+<h2 id="latte-layer">Latte Layer</h2>
+<p>The problem with attention is that computing all $A_{ij}$ is quadratic in sequence length, hence we need to find a more efficient way to summarise the interactions between tokens. One simple approach is to intoduce a few learnable tokens and perform attention only between the introduces tokens and the original sequence. This approach is was succesfully explored by many sparse methods like <a href="https://arxiv.org/abs/2007.14062">BigBird</a>, however in Latte all tokens are considered in the calculation.
+<img src="./static/comp_att.png" alt="comp-att" />
+<em>Comparison between Bidirectional Standard attention, sparse attention methods and Bidirectioanl Latte.</em></p>
+
+<p>More exactly, we replace each $A_{ij}$ with an approximation based on $L$ learnale latent variables:
+\(A_{ij} = \sum_{l=1}^L Q_{il}K_{lj}\)<br />
+The new vector representation of each token is given by:
+\(\tilde{x_i} = \sum_{l=1}^L Q_{il} \sum_{j=1}^T K_{lj}V_j\)
+Note that $Q$, $K$ have different sizes than the queries and keys in the standard attention. Figure 3. descirbed in detail how we obtain the matrices.</p>
+
+<p><img src="./static/fig2.png" alt="Latte" />
+<em>Figure 3. Each row in X corresponds to a token in the input sentence. We multiply the input to the corresponding weights of Q,K,V. Note that we exponentiate and normalize both Q and K on rows.</em></p>
+
+<p>The approach is motivated by a probabilistic perspective where $A_{ij}$ is interpreted as probability distribution. While in this blog we describe the model at an intuitive level, a more rigurous mathematical explanation can be found in <a href="https://arxiv.org/abs/2402.17512">our paper</a>.</p>
+
+<h2 id="causal-latte">Causal Latte</h2>
+<p>In the previous sections we described the bidirectional case, but for problems like language generation we need a causal mechanism. The change can be trivially seen by looking at the formula $\tilde{x}_i$. We only need to consider tokens up until index $i$, and no longer the entire sequence:
+\(\tilde{x_i} = \sum_{l=1}^L Q_{il} \sum_{j=1}^i K_{lj}V_j\)</p>
+
+<p>This formulation can be implemented using matrix operations, however a sequential implementation has the benefit of small memory and constant time for next token prediction task at inference.</p>
+
+<h2 id="results">Results</h2>
+<h3 id="long-range-arena">Long Range Arena</h3>
+<p>Long Range Arena os a synthetic benchmark which tests models on long sequences. We implement the tasks with a bidirectional Latte model using 40 latents and obtain good results compared to other transformer models.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>ListOps</th>
+      <th>Text</th>
+      <th>Retreival</th>
+      <th>Image</th>
+      <th>PathfInder</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Latte</td>
+      <td>40.18</td>
+      <td>64.5</td>
+      <td>73.39</td>
+      <td>47.55</td>
+      <td>75.61</td>
+    </tr>
+    <tr>
+      <td>Standard Transformer</td>
+      <td>36.37</td>
+      <td>64.27</td>
+      <td>57.46</td>
+      <td>42.44</td>
+      <td>71.40</td>
+    </tr>
+    <tr>
+      <td>Linformer</td>
+      <td>35.70</td>
+      <td>53.94</td>
+      <td>52.27</td>
+      <td>38.56</td>
+      <td>76.34</td>
+    </tr>
+    <tr>
+      <td>Luna</td>
+      <td>38.01</td>
+      <td>65.74</td>
+      <td>79.55</td>
+      <td>47.47</td>
+      <td>78.89</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="language-generation">Language Generation</h2>
+<p>We train a model on wiki103 dataset and show and example of language generation from a short promt.</p>
+
+<p>Prompt:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;s&gt;Homarus gammarus
+</code></pre></div></div>
+<p>Generation of 100 tokens:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;s&gt;Homarus gammarus, the common ancestor of the gray wolf &lt;unk&gt;, has been identified to date to at least the Miocene of northern Chile, from the Lower Peru. Analysis by the researchers has shown the presence of &lt;unk&gt;, &lt;unk&gt;, &lt;unk&gt;, and &lt;unk&gt; &lt;unk&gt; to be a member of the subfamily &lt;unk&gt;, although &lt;unk&gt; et al. ( 2001 ) suggested a species may represent this subspecies. \n fauna includes large mammals, and a few species have been documented in the Pacific island of California. \n mtDNA from Arizona bears the subspecies D. huenei's skull, found across the Pacific Ocean, along with three species of small theropod mongooses. The two species share several distinct forms, both geographically and genetically. The genus name honors the long @-@ established genus &lt;unk&gt;, found in northwestern Argentina. The skull and skull are from the Late Cretaceous of Texas, but not from"
+</code></pre></div></div>

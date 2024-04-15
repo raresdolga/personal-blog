@@ -17,15 +17,16 @@ title: Home
 email: rares.dolga.16@ucl.ac.uk
 description: >- # this means to ignore newlines until "baseurl:"
  My personal blog where I talk about my projects!
-#baseurl: "" # the subpath of your site, e.g. /blog
-#url: "" # the base hostname & protocol for your site, e.g. http://example.com # https://non-obvius-jdsaO08321312.com
-twitter_username: raresdolga976
+baseurl: "blog-latte" # the subpath of your site, e.g. /blog
+url: "https://raresdolga.github.io/" # the base hostname & protocol for your site, e.g. http://example.com # https://non-obvius-jdsaO08321312.com
+twitter_username: raresdolga978
 github_username:  raresdolga
 
 # Build settings
 markdown: kramdown
 
-theme: minima
+theme: jekyll-theme-hacker
+# theme: minima
 # plugins:
 #   - jekyll-feed
 

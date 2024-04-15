@@ -19,7 +19,7 @@ description: >- # this means to ignore newlines until "baseurl:"
  My personal blog where I talk about my projects!
 #baseurl: "" # the subpath of your site, e.g. /blog
 #url: "" # the base hostname & protocol for your site, e.g. http://example.com # https://non-obvius-jdsaO08321312.com
-twitter_username: raresdolga971
+twitter_username: raresdolga972
 github_username:  raresdolga
 
 # Build settings
@@ -37,7 +37,7 @@ defaults:
       path: "assets/img"
     values:
       image: true
-      
+
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.

@@ -29,8 +29,8 @@ theme: minima
 # plugins:
 #   - jekyll-feed
 
-#include:
-#  - "_assets_local"
+include:
+ - "assets_local"
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list

@@ -19,15 +19,15 @@ description: >- # this means to ignore newlines until "baseurl:"
  My personal blog where I talk about my projects!
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com # https://non-obvius-jdsaO08321312.com
-twitter_username: raresdolga97
+twitter_username: raresdolga978
 github_username:  raresdolga
 
 # Build settings
-markdown: kramdown
+# markdown: kramdown
 
 theme: minima
-plugins:
-  - jekyll-feed
+# plugins:
+#   - jekyll-feed
 
 include:
   - "_assets_local"
@@ -35,11 +35,12 @@ include:
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
-exclude:
-  - Gemfile
-  - Gemfile.lock
-  - node_modules
-  - vendor/bundle/
-  - vendor/cache/
-  - vendor/gems/
-  - vendor/ruby/
+
+# exclude:
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/

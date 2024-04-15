@@ -29,8 +29,8 @@ theme: minima
 # plugins:
 #   - jekyll-feed
 
-include:
- - "_assets_local"
+# include:
+#  - "_assets_local"
 
 defaults:
   - scope:

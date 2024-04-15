@@ -25,10 +25,10 @@ github_username:  raresdolga
 # Build settings
 markdown: kramdown
 
-theme: jekyll-theme-hacker
-# theme: minima
-# plugins:
-#   - jekyll-feed
+#theme: jekyll-theme-hacker
+theme: minima
+plugins:
+   - jekyll-feed
 
 # include:
 #  - "_assets_local"

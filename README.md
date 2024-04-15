@@ -6,7 +6,15 @@
   In your repository settings: enable template repository, add your 1280×640 social image, auto delete head branches.
   Add your open source license, GitHub uses MIT license.
 -->
-
+# Running Locally
+1. Install Ruby using rbenv:
+```
+  https://linuxize.com/post/how-to-install-ruby-on-ubuntu-20-04/
+```
+2. Run the website locally:
+```
+  bundle exec jekyll serve
+```
 # GitHub Pages
 
 _Create a site or blog from your GitHub repositories with GitHub Pages._
